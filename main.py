@@ -3,16 +3,15 @@
 # Implementação da arquitetura YOLO baseada no artigo YOLO object detection with OpenCV
 # do Adrian Rosebrock, autor do site PyImageSearch
 
-
 # importar os pacotes necessários
 import numpy as np
 import argparse
 import os
 import cv2
 import time
+from support.util import download_assets
 from imutils.video import VideoStream
 from imutils.video import FPS
-
 
 # constantes do modelo
 CONFIDENCE_MIN = 0.4
@@ -21,8 +20,17 @@ MODEL_BASE_PATH = "yolo-coco"
 
 # receber os argumentos para o script
 ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--input", required=True, help="Endereço do streaming do drone")
+ap.add_argument("-i", "--input", required=False, default="rtmp://localhost/live", help="Endereço do streaming do drone")
+ap.add_argument("-y", "--yolo-version", required=False, default="yolov3", help="Versões do modelo YOLO disponíveis 'yolov3' ou 'yolov3-tiny")
+ap.add_argument("-d", "--download-assets", required=False, default=False, action="store_true", help="Download automático dos recursos")
+
 streaming_path = vars(ap.parse_args())['input']
+yolo_version = vars(ap.parse_args())['yolo_version']
+should_download_assets = bool(vars(ap.parse_args())['download_assets'])
+
+# download dos recursos
+if (should_download_assets):
+    download_assets(yolo_version)
 
 # extrair os nomes das classes a partir do arquivo
 print("[+] Carregando labels das classes treinadas...")
@@ -36,8 +44,8 @@ with open(os.path.sep.join([MODEL_BASE_PATH, 'coco.names'])) as f:
 # carregar o modelo treinado YOLO (c/ COCO dataset)
 print("[+] Carregando o modelo YOLO treinado no COCO dataset...")
 net = cv2.dnn.readNetFromDarknet(
-    os.path.sep.join([MODEL_BASE_PATH, 'yolov3.cfg']),
-    os.path.sep.join([MODEL_BASE_PATH, 'yolov3.weights']))
+    os.path.sep.join([MODEL_BASE_PATH, '{}.cfg'.format(yolo_version)]),
+    os.path.sep.join([MODEL_BASE_PATH, '{}.weights'.format(yolo_version)]))
 
 # extrair layers não conectados da arquitetura YOLO
 ln = net.getLayerNames()
@@ -110,8 +118,6 @@ while True:
 
     # atualiza o fps
     fps.update()
-
-
 
 # eliminar processos e janelas
 fps.stop()

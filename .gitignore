@@ -1,0 +1,3 @@
+yolo-coco/*.weights
+yolo-coco/*.cfg
+.DS_Store

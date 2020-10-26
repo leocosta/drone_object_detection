@@ -20,3 +20,25 @@
 Devido à restrição de tamanhos de arquivos no Github, não foi possível disponibilizar o modelo YOLO treinado no dataset COCO.
 
 Para esse script funcionar, [baixe este arquivo zip aqui](https://www.dropbox.com/s/ghe0ksnom26skah/yolo-coco.zip?dl=0) e coloque todo o conteúdo extraído (3 arquivos no total) dentro do diretório `coco-yolo`.
+
+##### 2. Baixar o modelo YOLO-COCO automaticamente
+
+Executar o script utilizando o argumento ```--download-assets``` para baixar os arquivos de configuração e modelo YOLO treinado com dataset COCO.
+
+**Exemplo:**
+
+```bash
+python main.py -i rmtp://localhost/live --download-assets
+```
+
+##### 3. Execução com Tiny-YOLO 
+
+Se tiver problemas de perfomance durante a execução, tente rodar com o parâmetro ```--yolo-version=yolov3-tiny```. O script irá utilizar um modelo treinado com dataset menor.
+
+O Tiny-YOLO demonstrou ser aproximadamente 442% mais rápido que as versões mais completas, chegando a mais de 244 FPS em uma única GPU. https://www.pyimagesearch.com/2020/01/27/yolo-and-tiny-yolo-object-detection-on-the-raspberry-pi-and-movidius-ncs/
+
+**Exemplo:**
+
+```bash
+python main.py -i rmtp://localhost/live --yolo-version=yolov3-tiny
+```
